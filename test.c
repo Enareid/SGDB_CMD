@@ -39,7 +39,7 @@ main() {
     printf("Connexion réussie à la base de données !\n");
 
     while (1) {
-        printf("(SGDB) %s : ", schema);
+        printf("(SGDB) %s:%s : ", schema, table);
         char cmd[256];
         fgets(cmd, sizeof(cmd), stdin);
         if (strcmp(cmd, "help\n") == 0){
@@ -59,8 +59,11 @@ main() {
             }
             PQclear(res);
         }
-        if (strncmp(cmd, "go ", 3) == 0) {
-            go(cmd);
+        if (strncmp(cmd, "schema ", 7) == 0) {
+            schema_choice(cmd);
+        }
+        if (strncmp(cmd, "table ", 6) == 0) {
+            table_choice(cmd);
         }
         if (strcmp(cmd, "list table\n") == 0){
             char buffer[200];

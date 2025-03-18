@@ -4,6 +4,7 @@
 #include "fonctions.h"
 
 char * schema = "";
+char * table = "";
 
 void
 help()
@@ -25,7 +26,7 @@ list_table(char * request)
 }
 
 void
-go(char * line)
+schema_choice(char * line)
 {
     const char * separator = " ";
     char * test  = strtok(line, separator);
@@ -33,4 +34,15 @@ go(char * line)
     schema = malloc(strlen(test) + 1);
     strcpy(schema, test);
     schema[strlen(test) - 1] = '\0';
+}
+
+void
+table_choice(char * line)
+{
+    const char * separator = " ";
+    char * test  = strtok(line, separator);
+    test = strtok(NULL, separator);
+    table = malloc(strlen(test) + 1);
+    strcpy(table, test);
+    table[strlen(test) - 1] = '\0';
 }
