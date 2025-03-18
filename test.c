@@ -47,7 +47,6 @@ main() {
         }
         if (strcmp(cmd, "list schema\n") == 0) {
             char * exec = list_schema();
-            printf("%s\n", exec);
             PGresult *res = PQexec(conn, exec);
             if (PQresultStatus(res) != PGRES_TUPLES_OK) {
                 fprintf(stderr, "Requête échouée : %s\n", PQerrorMessage(conn));
@@ -60,12 +59,26 @@ main() {
             }
             PQclear(res);
         }
-        if (strstr(cmd, "go") != NULL) {
-            schema = cmd + 3;
-            go();
+        if (strncmp(cmd, "go ", 3) == 0) {
+            go(cmd);
         }
-
+        if (strcmp(cmd, "list table\n") == 0){
+            char buffer[200];
+            list_table(buffer);
+            PGresult *res = PQexec(conn, buffer);
+            if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+                fprintf(stderr, "Requête échouée : %s\n", PQerrorMessage(conn));
+                PQclear(res);
+                continue;
+            }
+            int n = PQntuples(res);
+            for (int i = 0; i < n; i++) {
+                printf("%s\n", PQgetvalue(res, i, 0));
+            }
+            PQclear(res);
+        }
         if (strcmp(cmd, "exit\n") == 0) {
+            free(schema);
             break;
         }
     }

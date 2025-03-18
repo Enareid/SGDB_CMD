@@ -9,4 +9,6 @@ extern char* list_schema();
 
 extern void go();
 
+extern void list_table();
+
 #endif

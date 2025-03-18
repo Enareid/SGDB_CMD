@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "fonctions.h"
 
 char * schema = "";
@@ -18,8 +19,18 @@ list_schema()
 }
 
 void
-go()
+list_table(char * request)
 {
-    schema[strcspn(schema, "\n")] = 0;
-    printf("%s\n", schema);
+    sprintf(request, "SELECT table_name FROM information_schema.tables WHERE table_schema = '%s';", schema);
+}
+
+void
+go(char * line)
+{
+    const char * separator = " ";
+    char * test  = strtok(line, separator);
+    test = strtok(NULL, separator);
+    schema = malloc(strlen(test) + 1);
+    strcpy(schema, test);
+    schema[strlen(test) - 1] = '\0';
 }
