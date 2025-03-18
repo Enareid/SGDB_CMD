@@ -39,11 +39,34 @@ main() {
     printf("Connexion réussie à la base de données !\n");
 
     while (1) {
-        printf("(SGDB) : ");
+        printf("(SGDB) %s : ", schema);
         char cmd[256];
         fgets(cmd, sizeof(cmd), stdin);
         if (strcmp(cmd, "help\n") == 0){
             help();
+        }
+        if (strcmp(cmd, "list schema\n") == 0) {
+            char * exec = list_schema();
+            printf("%s\n", exec);
+            PGresult *res = PQexec(conn, exec);
+            if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+                fprintf(stderr, "Requête échouée : %s\n", PQerrorMessage(conn));
+                PQclear(res);
+                continue;
+            }
+            int n = PQntuples(res);
+            for (int i = 0; i < n; i++) {
+                printf("%s\n", PQgetvalue(res, i, 0));
+            }
+            PQclear(res);
+        }
+        if (strstr(cmd, "go") != NULL) {
+            schema = cmd + 3;
+            go();
+        }
+
+        if (strcmp(cmd, "exit\n") == 0) {
+            break;
         }
     }
 
