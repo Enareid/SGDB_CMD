@@ -80,6 +80,26 @@ main() {
         if (strncmp(cmd, "table ", 6) == 0) {
             table_choice(cmd);
         }
+        if (strcmp(cmd, "print\n") == 0) {
+            char buffer[200];
+            view_table(cmd);
+            PGresult *res = PQexec(conn, buffer);
+            if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+                fprintf(stderr, "Requête échouée : %s\n", PQerrorMessage(conn));
+                PQclear(res);
+                continue;
+            }
+            int n = PQntuples(res);
+            if(n==0){
+                printf("Erreur dans la requete\n");
+                PQclear(res);
+                continue;
+            }
+            for (int i = 0; i < n; i++) {
+                printf("%s\n", PQgetvalue(res, i, 0));
+            }
+            PQclear(res);
+        }
         if (strcmp(cmd, "list table\n") == 0){
             char buffer[200];
             list_table(buffer);

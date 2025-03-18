@@ -46,3 +46,9 @@ table_choice(char * line)
     strcpy(table, test);
     table[strlen(test) - 1] = '\0';
 }
+
+void
+view_table(char * request)
+{
+    sprintf(request, "SELECT * FROM %s;", table);
+}

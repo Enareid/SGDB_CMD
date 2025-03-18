@@ -14,4 +14,6 @@ extern void list_table(char * request);
 
 extern void table_choice(char * line);
 
+extern void view_table(char * request);
+
 #endif
