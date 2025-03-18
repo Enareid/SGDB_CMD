@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libpq-fe.h>
+#include "fonctions.h"
 
 #define MAX_INPUT 100
 
@@ -36,6 +37,15 @@ main() {
     }
 
     printf("Connexion réussie à la base de données !\n");
+
+    while (1) {
+        printf("(SGDB) : ");
+        char cmd[256];
+        fgets(cmd, sizeof(cmd), stdin);
+        if (strcmp(cmd, "help\n") == 0){
+            help();
+        }
+    }
 
     PQfinish(conn);
     return EXIT_SUCCESS;
