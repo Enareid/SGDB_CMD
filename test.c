@@ -28,7 +28,7 @@ void affichage(char * schema,char * table){
 
 int 
 main() {
-    int res;
+    int r;
     char host[MAX_INPUT], dbname[MAX_INPUT], user[MAX_INPUT], password[MAX_INPUT];
 
     get_input("Hôte : ", host, MAX_INPUT);
@@ -57,7 +57,7 @@ main() {
             help();
         }
         if (strcmp(cmd, "list schema\n") == 0) {
-            res = list_schema(conn);
+            r = list_schema(conn);
         }
         if (strncmp(cmd, "schema ", 7) == 0) {
             schema_choice(cmd);
@@ -65,7 +65,7 @@ main() {
         if (strncmp(cmd, "table ", 6) == 0) {
             table_choice(cmd);
         }
-        if (strcmp(cmd, "print\n") == 0) {
+        if (strcmp(cmd, "view\n") == 0) {
             char buffer[200];
             view_table(cmd);
             PGresult *res = PQexec(conn, buffer);
@@ -86,7 +86,7 @@ main() {
             PQclear(res);
         }
         if (strcmp(cmd, "list table\n") == 0){
-            res = list_table(conn);
+            r = list_table(conn);
         }
         if (strcmp(cmd, "exit\n") == 0) {
             free(schema);

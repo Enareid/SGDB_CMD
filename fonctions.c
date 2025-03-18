@@ -11,6 +11,12 @@ void
 help()
 {
     printf("help -- Affiche les commandes disponibles\n");
+    printf("list schema -- Affiche les schémas disponibles\n");
+    printf("schema <schema> -- Utilise le schéma <schema>\n");
+    printf("list table -- Affiche les tables du schéma courant\n");
+    printf("table <table> -- Utilise la table <table>\n");
+    printf("view -- Affiche le contenu de la table courante\n");
+    printf("exit -- Quitte le programme\n");
 }
 
 int
