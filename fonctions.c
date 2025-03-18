@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <libpq-fe.h>
 #include "fonctions.h"
 
 char * schema = "";
@@ -12,17 +13,51 @@ help()
     printf("help -- Affiche les commandes disponibles\n");
 }
 
-char *
-list_schema()
+int
+list_schema(PGconn* conn)
 {
     char * string = "SELECT schema_name FROM information_schema.schemata;";
-    return string;
+    PGresult *res = PQexec(conn, string);
+    if (PQresultStatus(res) == PGRES_EMPTY_QUERY) {
+        fprintf(stderr, "Requête échouée : %s\n", PQerrorMessage(conn));
+        PQclear(res);
+        return EXIT_FAILURE;
+    }
+    int n = PQntuples(res);
+    if(n==0){
+        printf("Erreur dans la requete\n");
+        PQclear(res);
+        return EXIT_FAILURE;
+    }
+    for (int i = 0; i < n; i++) {
+        printf("%s\n", PQgetvalue(res, i, 0));
+    }
+    PQclear(res);
+    return EXIT_SUCCESS;
 }
 
-void
-list_table(char * request)
+int
+list_table(PGconn* conn)
 {
-    sprintf(request, "SELECT table_name FROM information_schema.tables WHERE table_schema = '%s';", schema);
+    char buffer[200];
+    sprintf(buffer, "SELECT table_name FROM information_schema.tables WHERE table_schema = '%s';", schema);
+    PGresult *res = PQexec(conn, buffer);
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        fprintf(stderr, "Requête échouée : %s\n", PQerrorMessage(conn));
+        PQclear(res);
+        return EXIT_FAILURE;
+    }
+    int n = PQntuples(res);
+    if(n==0){
+        printf("Erreur dans la requete\n");
+        PQclear(res);
+        return EXIT_FAILURE;
+    }
+    for (int i = 0; i < n; i++) {
+        printf("%s\n", PQgetvalue(res, i, 0));
+    }
+    PQclear(res);
+    return EXIT_SUCCESS;
 }
 
 void

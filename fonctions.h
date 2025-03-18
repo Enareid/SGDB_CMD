@@ -6,11 +6,11 @@ extern char * table;
 
 extern void help();
 
-extern char* list_schema();
+extern int list_schema(PGconn *conn);
 
 extern void schema_choice(char * line);
 
-extern void list_table(char * request);
+extern int list_table(PGconn* conn);
 
 extern void table_choice(char * line);
 
