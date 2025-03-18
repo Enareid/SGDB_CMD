@@ -10,7 +10,7 @@ $(OUT): $(SRC)
 	$(CC) $(CFLAGS) -o $(OUT) $(SRC) $(LIBS)
 
 fonctions.o : fonctions.c fonctions.h
-	$(CC) -c fonctions.c
+	$(CC) $(CFLAGS) -c fonctions.c $(LIBS)
 
 clean:
 	rm -f $(OUT) fonctions.o
