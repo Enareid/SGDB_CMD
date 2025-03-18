@@ -82,21 +82,24 @@ main() {
         }
         if (strcmp(cmd, "print\n") == 0) {
             char buffer[200];
-            view_table(cmd);
+            view_table(buffer);
             PGresult *res = PQexec(conn, buffer);
             if (PQresultStatus(res) != PGRES_TUPLES_OK) {
                 fprintf(stderr, "Requête échouée : %s\n", PQerrorMessage(conn));
                 PQclear(res);
                 continue;
             }
-            int n = PQntuples(res);
-            if(n==0){
-                printf("Erreur dans la requete\n");
-                PQclear(res);
-                continue;
+            int rows = PQntuples(res);
+            int cols = PQnfields(res);
+            for (int i = 0; i < cols; i++) {
+                printf("%s\t", PQfname(res, i));
             }
-            for (int i = 0; i < n; i++) {
-                printf("%s\n", PQgetvalue(res, i, 0));
+            printf("\n");
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    printf("%s\t", PQgetvalue(res, i, j));
+                }
+                printf("\n");
             }
             PQclear(res);
         }
