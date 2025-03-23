@@ -27,14 +27,55 @@ void affichage(char * schema,char * table){
 }
 
 int 
-main() {
-    int r;
-    char host[MAX_INPUT], dbname[MAX_INPUT], user[MAX_INPUT], password[MAX_INPUT];
+read_connection_file(const char *filename, char *host, char *dbname, char *user, char *password) 
+{
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        perror("Erreur ouverture fichier");
+        return 0;
+    }
 
-    get_input("Hôte : ", host, MAX_INPUT);
-    get_input("Nom de la base de données : ", dbname, MAX_INPUT);
-    get_input("Utilisateur : ", user, MAX_INPUT);
-    get_input("Mot de passe : ", password, MAX_INPUT);
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        line[strcspn(line, "\n")] = 0;
+        if (strncmp(line, "host=", 5) == 0)
+            strcpy(host, line + 5);
+        else if (strncmp(line, "dbname=", 7) == 0)
+            strcpy(dbname, line + 7);
+        else if (strncmp(line, "user=", 5) == 0)
+            strcpy(user, line + 5);
+        else if (strncmp(line, "password=", 9) == 0)
+            strcpy(password, line + 9);
+    }
+
+    fclose(file);
+    return 1;
+}
+
+
+
+int 
+main(int argc, char * argv[]) {
+    int r;
+    char host[MAX_INPUT] = "";
+    char dbname[MAX_INPUT] = "";
+    char user[MAX_INPUT] = "";
+    char password[MAX_INPUT] = "";
+
+    if (argc == 3 && strcmp(argv[1], "-f") == 0) {
+        r = read_connection_file(argv[2], host, dbname, user, password);
+        if (!r) {
+            return r;
+        }
+    } else if (argc == 1) {
+        get_input("Hôte : ", host, MAX_INPUT);
+        get_input("Nom de la base de données : ", dbname, MAX_INPUT);
+        get_input("Utilisateur : ", user, MAX_INPUT);
+        get_input("Mot de passe : ", password, MAX_INPUT);
+    } else {
+        fprintf(stderr, "Usage: %s [-f filename]\n", argv[0]);
+        return EXIT_FAILURE;
+    }
 
     char conninfo[4 * MAX_INPUT + 30];  // Buffer pour la chaîne de connexion
     snprintf(conninfo, sizeof(conninfo), "host=%s dbname=%s user=%s password=%s", host, dbname, user, password);
