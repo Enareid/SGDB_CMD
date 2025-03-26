@@ -123,4 +123,6 @@ Temporary Items
 .ionide
 
 test
+
+data.conf
 # End of https://www.toptal.com/developers/gitignore/api/c,visualstudiocode,macos,linux
